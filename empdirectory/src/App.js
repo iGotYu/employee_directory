@@ -1,10 +1,9 @@
 import React from "react";
-import EmployeeContainer from "./components/Employee/Employee"
+import EmployeeContainer from "./components/Employee/Employee";
 
-function App(){
-    return (
-    <Employee/>
-    ); 
+function App() {
+  return( <Employee />
+    );
 }
 
 export default App;
