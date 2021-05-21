@@ -3,7 +3,8 @@ import "./style.css";
 
 function SearchForm(props) {
   return (
-    <form className="input-group">
+    <form className="form-group">
+        <label htmlFor= "search">Search:</label>
       <input
         onChange={props.handleInputChange}
         value={props.value}
