@@ -14,14 +14,14 @@ function SearchForm(props) {
         placeholder="Search"
         id="search"
       ></input>
-      <button
+      {/* <button
         onCLick={props.handleFormSubmit}
         className="btn btn-outline-secondary"
         type="button"
         id="button"
       >
         Search Now
-      </button>
+      </button> */}
     </form>
   );
 }

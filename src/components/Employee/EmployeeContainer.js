@@ -1,6 +1,6 @@
 import React from "react";
 import "./style.css";
-import API from "../utils/API";
+import API from "../../utils/API";
 import Header from "../Header/Header";
 import ResultsList from "../ResultsList/ResultsList";
 import Search from "../Search/Search";
@@ -12,6 +12,7 @@ class EmployeeContainer extends React.Component {
     employeesFiltered: [],
     error: "",
     employeeSorted: [],
+    order: false
   };
 
   componentDidMount() {
@@ -48,38 +49,70 @@ class EmployeeContainer extends React.Component {
   };
 
   sortEmployees = () => {
+
+    console.log("********sort working ...");
+
     this.setState({
-      employeeSorted: this.state.order
-        ? this.state.employees.sort((x, y) => {
+      employeesFiltered: 
+      
+      this.state.order
+        ? this.state.employeesFiltered.sort((x, y) => {
             if (x.name.first < y.name.first) return -1;
             if (x.name.first > y.name.first) return 1;
             return 0;
           })
-        : this.state.employees.reverse((x, y) => {
+        : this.state.employeesFiltered.reverse((x, y) => {
             if (x.name.first < y.name.first) return 1;
             if (x.name.first > y.name.first) return -1;
             return 0;
           }),
+
       order: !this.state.order,
     });
   };
 
   handleInputChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
+    //const name = event.target.name;
+    const value = event.target.value.toLowerCase();
+
+    const tempFiltered = this.state.employees.filter(
+      (employee) => employee.name.first.toLowerCase().indexOf(value) > -1
+    );
 
     this.setState({
-      [name]: value,
+      employeesFiltered: [...tempFiltered],
     });
   };
 
-  handleFormSubmit = (event) => {
-    console.log("click");
-    event.preventDefault();
-    this.searchEmployee(this.state.search);
-    this.setState({
-      search: "",
-    });
+  // handleFormSubmit = (event) => {
+  //   event.preventDefault();
+  //   const value = event.target.value.toLowerCase();
+  //   const tempFiltered = this.state.employees.filter(
+  //     (employee) => employee.name.first.toLowerCase().indexOf(value) > -1
+  //   );
+
+  //   this.setState({
+  //     employeesFiltered: [...tempFiltered],
+  //   });
+  // };
+
+  renderRenderTableRow = () => {
+    let result = null;
+
+    if (this.state.employeesFiltered.length > 0) {
+      result = this.state.employeesFiltered.map((employee, key) => (
+        <ResultsList
+          picture={employee.picture.large}
+          name={employee.name.first + " " + employee.name.last}
+          phone={employee.phone}
+          email={employee.email}
+          dob={employee.dob}
+          key={key}
+        />
+      ));
+    }
+
+    return result;
   };
 
   render() {
@@ -92,41 +125,20 @@ class EmployeeContainer extends React.Component {
           handleReload={this.handleReload}
           search={this.state.search}
         />
-        <TableHeader handleSort={this.handleSort} />
+        <Header />
 
-        <div>
-          {this.state.employeesFiltered.length > 0 ? (
-            <div>
-              {
-                (this,
-                state,
-                employeesFiltered.map((employee, key) => (
-                  <ResultsList
-                    picture={employee.picture.large}
-                    name={employee.name.first + " " + employee.name.last}
-                    phone={employee.phone}
-                    email={employee.email}
-                    dob={employee.dob}
-                    key={key}
-                  />
-                )))
-              }
-            </div>
-          ) : (
-            <div>
-              {this.state.employees.map((employee, key) => (
-                <ResultsList
-                  picture={employee.picture.large}
-                  name={employee.name.first + " " + employee.name.last}
-                  phone={employee.phone}
-                  email={employee.email}
-                  dob={employee.dob}
-                  key={key}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <table className="p-4 text-center" id="results-list">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th onClick={this.sortEmployees}>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>DOB</th>
+            </tr>
+          </thead>
+          <tbody>{this.renderRenderTableRow()}</tbody>
+        </table>
       </div>
     );
   }
